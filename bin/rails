@@ -1,0 +1,7 @@
+#!/bin/bash
+set -eu
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+source $BASEDIR/config
+
+exec ssh -t p4 docker run --env-file env.production --rm -it $IMAGE bundle exec rails $@
+

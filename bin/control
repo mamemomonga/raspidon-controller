@@ -1,0 +1,79 @@
+#!/bin/bash
+set -eu
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+source $BASEDIR/config
+source $BASEDIR/start-stop.sh
+
+do_start_web() {
+	local host=$1
+	echo "** $host starting web"
+	ssh $host bash << EOS
+set -xeu
+docker run --env-file env.production -d --restart=always \
+	--name 'web' -p "3000:3000" \
+	$IMAGE \
+	bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000 -b '0.0.0.0'"
+EOS
+
+}
+
+do_start_streaming() {
+	local host=$1
+	echo "** $host starting streaming"
+	ssh $host bash << EOS
+set -xeu
+docker run --env-file env.production -d --restart=always \
+	--name 'streaming' -p "4000:4000" \
+	$IMAGE \
+	yarn start 
+EOS
+
+}
+
+do_start_sidekiq() {
+	local host=$1
+	local opt=$2
+	echo "** $host starting sidekiq"
+	ssh $host bash << EOS
+set -xeu
+docker run --env-file env.production -d --restart=always \
+	--hostname="$host.sidekiq" \
+	--name 'sidekiq' \
+	$IMAGE \
+	bash -c "exec bundle exec sidekiq $opt"
+EOS
+
+}
+
+do_stop_services() {
+	local host=$1
+	echo "** $host stopping"
+	ssh $host docker rm -f web streaming sidekiq || true
+}
+
+do_push_config() {
+	for i in 1 2 3 4 5; do
+		echo "[p$i]"
+		cat $BASEDIR/env.production | ssh p$i 'cat > /home/ubuntu/env.production'
+	done
+}
+
+case "${1:-}" in
+	"start" )
+		do_start
+		;;
+
+	"stop" )
+		do_stop
+		;;
+
+	"push-config" )
+		do_push_config
+		;;
+
+	* )
+		echo "USAGE: $0 [ start | stop | push-config ]"
+		exit 1
+		;;
+esac
+
