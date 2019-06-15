@@ -15,3 +15,5 @@
 * Raspberry Pi3 B のOSはRaspberry Pi3 B, Ubuntu 18.04 LTS, ARM64
 
 * ARM64版のマストドンのDocker Fileは[こちら](https://github.com/mamemomonga/mastodon/blob/arm64-v2.9.0/Dockerfile)、Docker Hubは[こちら](https://cloud.docker.com/u/mamemomonga/repository/docker/mamemomonga/mastodon-arm)。 実機でビルド
+
+* start-stop.sh は起動停止用の処理。適当にコメントアウトしたりして実行する。
