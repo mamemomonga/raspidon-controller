@@ -1,6 +1,6 @@
 # raspidon controller
 
-らずぴどん専用のコンテナコントローラ。Docker Composeを使わない運用などの参考に。
+らずぴどん専用のコンテナコントローラ。Docker Composeを使わず、シェルスクリプトとSSHで運用する際の参考に。
 
 # ヒント
 
