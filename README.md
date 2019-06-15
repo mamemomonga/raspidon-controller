@@ -8,7 +8,7 @@
 
 * カレントディレクトリに env.productionファイルが必要。ドットファイルではない。[こちら](https://github.com/tootsuite/mastodon/blob/master/.env.production.sample)を参考に。
 
-* ~/.ssh/config で p1~p6 で各種ラズベリーパイに接続できるようにしてある。
+* \~/.ssh/config で p1~p6 で各種ラズベリーパイに接続できるようにしてある。
 
 * config で Docker Imageを設定する。
 
